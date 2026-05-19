@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MealPrepPro — Weekly Meal Planning Made Easy</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand" onclick="showSection('hero')">
+      <span class="logo-icon">🥘</span>
+      <span class="logo-text">MealPrep<strong>Pro</strong></span>
+    </div>
+    <button class="nav-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showSection('planner')" data-section="planner">Weekly Planner</a></li>
+      <li><a href="#" onclick="showSection('discover')" data-section="discover">Discover Recipes</a></li>
+      <li><a href="#" onclick="showSection('my-recipes')" data-section="my-recipes">My Recipes</a></li>
+      <li><a href="#" onclick="showSection('shopping')" data-section="shopping">Shopping List</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" class="section hero active">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Plan Your Meals.<br>Save Time & Money.</h1>
+      <p class="hero-sub">Discover international recipes, build your weekly menu, and get auto-generated shopping lists. All in one place.</p>
+      <div class="hero-features">
+        <div class="hero-feature">
+          <span class="feature-icon">⚡</span>
+          <h3>Eat Better</h3>
+          <p>Balanced meals from cuisines around the world</p>
+        </div>
+        <div class="hero-feature">
+          <span class="feature-icon">⏱️</span>
+          <h3>Save Time</h3>
+          <p>Plan once, cook all week with smart prep</p>
+        </div>
+        <div class="hero-feature">
+          <span class="feature-icon">💰</span>
+          <h3>Save Money</h3>
+          <p>Buy only what you need with auto shopping lists</p>
+        </div>
+        <div class="hero-feature">
+          <span class="feature-icon">🌍</span>
+          <h3>Go Global</h3>
+          <p>Explore Italian, Thai, Mexican, Indian & more</p>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="showSection('planner')">Start Planning Your Week</button>
+    </div>
+  </section>
+
+  <!-- Weekly Planner -->
+  <section id="planner" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Weekly Meal Planner</h2>
+        <p>Click any slot to add a recipe from your collection or discover new ones.</p>
+        <div class="planner-actions">
+          <button class="btn btn-outline" onclick="clearWeek()">Clear Week</button>
+          <button class="btn btn-primary" onclick="showSection('shopping')">Generate Shopping List</button>
+        </div>
+      </div>
+      <div class="planner-grid" id="planner-grid"></div>
+    </div>
+  </section>
+
+  <!-- Discover Recipes -->
+  <section id="discover" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Discover Recipes</h2>
+        <p>Browse international cuisines or search for something specific.</p>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="recipe-search" placeholder="Search for a recipe... (e.g. chicken curry, pasta, tacos)" onkeydown="if(event.key==='Enter')searchRecipes()">
+        <button class="btn btn-primary" onclick="searchRecipes()">Search</button>
+      </div>
+      <div class="cuisine-filters" id="cuisine-filters">
+        <button class="cuisine-tag active" onclick="filterCuisine('', this)">All</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Italian', this)">🇮🇹 Italian</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Mexican', this)">🇲🇽 Mexican</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Indian', this)">🇮🇳 Indian</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Thai', this)">🇹🇭 Thai</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Japanese', this)">🇯🇵 Japanese</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Chinese', this)">🇨🇳 Chinese</button>
+        <button class="cuisine-tag" onclick="filterCuisine('French', this)">🇫🇷 French</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Moroccan', this)">🇲🇦 Moroccan</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Turkish', this)">🇹🇷 Turkish</button>
+        <button class="cuisine-tag" onclick="filterCuisine('American', this)">🇺🇸 American</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Greek', this)">🇬🇷 Greek</button>
+        <button class="cuisine-tag" onclick="filterCuisine('Spanish', this)">🇪🇸 Spanish</button>
+      </div>
+      <div class="recipe-grid" id="discover-grid">
+        <div class="loading">Loading recipes...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- My Recipes -->
+  <section id="my-recipes" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>My Recipes</h2>
+        <p>Your personal recipe collection. Add your own or save discoveries.</p>
+        <button class="btn btn-primary" onclick="openRecipeEditor()">+ Add New Recipe</button>
+      </div>
+      <div class="recipe-grid" id="my-recipes-grid">
+        <div class="empty-state">
+          <span class="empty-icon">📝</span>
+          <h3>No recipes yet</h3>
+          <p>Add your own recipes or save ones you discover!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shopping List -->
+  <section id="shopping" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Shopping List</h2>
+        <p>Auto-generated from your weekly meal plan. Check off items as you shop.</p>
+        <div class="planner-actions">
+          <button class="btn btn-outline" onclick="clearChecked()">Clear Checked</button>
+          <button class="btn btn-outline" onclick="copyShoppingList()">Copy to Clipboard</button>
+        </div>
+      </div>
+      <div id="shopping-list" class="shopping-list">
+        <div class="empty-state">
+          <span class="empty-icon">🛒</span>
+          <h3>No items yet</h3>
+          <p>Add recipes to your weekly planner to generate a shopping list.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recipe Detail Modal -->
+  <div class="modal-overlay" id="recipe-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Recipe Editor Modal -->
+  <div class="modal-overlay" id="editor-modal" onclick="if(event.target===this)closeEditor()">
+    <div class="modal modal-editor">
+      <button class="modal-close" onclick="closeEditor()">&times;</button>
+      <h2 id="editor-title">Add New Recipe</h2>
+      <form id="recipe-form" onsubmit="saveRecipe(event)">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label>Recipe Name *</label>
+          <input type="text" id="edit-name" required placeholder="e.g. Grandma's Chicken Curry">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cuisine</label>
+            <select id="edit-cuisine">
+              <option value="">Select cuisine</option>
+              <option>Italian</option><option>Mexican</option><option>Indian</option>
+              <option>Thai</option><option>Japanese</option><option>Chinese</option>
+              <option>French</option><option>Moroccan</option><option>Turkish</option>
+              <option>American</option><option>Greek</option><option>Spanish</option>
+              <option>Korean</option><option>Vietnamese</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="edit-category">
+              <option value="">Select category</option>
+              <option>Breakfast</option><option>Lunch</option><option>Dinner</option>
+              <option>Snack</option><option>Dessert</option><option>Side Dish</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prep Time (min)</label>
+            <input type="number" id="edit-prep" placeholder="15">
+          </div>
+          <div class="form-group">
+            <label>Servings</label>
+            <input type="number" id="edit-servings" placeholder="4">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Image URL (optional)</label>
+          <input type="url" id="edit-image" placeholder="https://example.com/photo.jpg">
+        </div>
+        <div class="form-group">
+          <label>Ingredients * (one per line)</label>
+          <textarea id="edit-ingredients" rows="6" required placeholder="2 chicken breasts&#10;1 can coconut milk&#10;2 tbsp curry paste&#10;1 cup rice"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Instructions * (one step per line)</label>
+          <textarea id="edit-instructions" rows="6" required placeholder="Heat oil in a large pan&#10;Add chicken and cook until browned&#10;Add curry paste and stir&#10;Pour in coconut milk and simmer 20 min"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" onclick="closeEditor()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Recipe</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Slot Picker Modal -->
+  <div class="modal-overlay" id="slot-modal" onclick="if(event.target===this)closeSlotPicker()">
+    <div class="modal modal-slot">
+      <button class="modal-close" onclick="closeSlotPicker()">&times;</button>
+      <h2>Choose a Recipe</h2>
+      <div class="slot-tabs">
+        <button class="slot-tab active" onclick="switchSlotTab('saved', this)">My Recipes</button>
+        <button class="slot-tab" onclick="switchSlotTab('search', this)">Search Online</button>
+      </div>
+      <div id="slot-saved" class="slot-panel active">
+        <div id="slot-saved-list" class="slot-recipe-list"></div>
+      </div>
+      <div id="slot-search" class="slot-panel">
+        <div class="search-bar" style="margin-bottom:1rem">
+          <input type="text" id="slot-search-input" placeholder="Search recipes..." onkeydown="if(event.key==='Enter')slotSearch()">
+          <button class="btn btn-primary" onclick="slotSearch()">Search</button>
+        </div>
+        <div id="slot-search-list" class="slot-recipe-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>MealPrepPro — Eat better, stress less. Built with ❤️ for meal preppers worldwide.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
